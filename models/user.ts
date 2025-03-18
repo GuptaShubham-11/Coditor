@@ -9,7 +9,6 @@ export interface IUser extends Document {
   role: 'subscriber' | 'admin' | 'root';
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>(
@@ -54,11 +53,6 @@ userSchema.pre<IUser>('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 11);
   next();
 });
-
-// Compare Password Method
-userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
 
 const User = mongoose.models?.User || mongoose.model<IUser>('User', userSchema);
 export default User;
