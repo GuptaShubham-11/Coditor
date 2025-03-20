@@ -25,7 +25,7 @@ async function dbToConnect() {
 
     cached.promise = mongoose
       .connect(MONGODB_URI, {
-        dbName: 'shorts',
+        dbName: 'coditor',
         ...opts,
       })
       .then(() => mongoose.connection);
