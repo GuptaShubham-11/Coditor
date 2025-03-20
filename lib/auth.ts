@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      id: 'credentials',
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email', required: true },
@@ -17,15 +18,16 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Missing email or password');
         }
 
+        await dbToConnect();
+
         try {
-          await dbToConnect();
-          const user = await User.findOne({ email: credentials.email });
+          const user = await User.findOne({ email: credentials.email }).select('+password');
 
           if (!user) {
             throw new Error('User not found');
           }
 
-          const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password); // ✅ Use bcrypt
+          const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
 
           if (!isPasswordCorrect) {
             throw new Error('Invalid password');
@@ -37,9 +39,8 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             role: user.role,
           };
-        } catch (error) {
-          console.error('Authentication error:', error);
-          throw new Error('Internal server error');
+        } catch (error: any) {
+          throw new Error(error.message || 'Internal server error');
         }
       },
     }),
