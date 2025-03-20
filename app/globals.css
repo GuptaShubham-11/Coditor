@@ -1,26 +1,187 @@
 @import 'tailwindcss';
+@plugin 'tailwindcss-animate';
 
+/* 🌟 Global Color Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 🔆 Light Mode */
+  --background: #f9fafb;
+  /* Soft Off-White */
+  --text: #1e1e1e;
+  /* Deep Black (Contrast: 15.8:1 ✅) */
+  --primary: #0056b3;
+  /* Strong Blue (Buttons, Highlights) */
+  --primary-text: #ffffff;
+  /* White */
+  --secondary: #4b5563;
+  /* Muted Gray (Borders, Subtle UI) */
+  --secondary-text: #ffffff;
+  --accent: #d97706;
+  /* Deep Orange (CTA, Active States) */
+  --accent-text: #ffffff;
+  --border-color: #e5e7eb;
+  /* Light Gray */
+  --ring: #d97706;
+  /* Accent Focus Color */
+  --radius: 0.625rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 🌙 Dark Mode */
+.dark {
+  --background: #121826;
+  /* Deep Navy */
+  --text: #e1f5f9;
+  /* Soft Cyan-White (Contrast: 14.9:1 ✅) */
+  --primary: #4f9dde;
+  /* Soft Blue (Buttons, Highlights) */
+  --primary-text: #121826;
+  /* Deep Navy */
+  --secondary: #94a3b8;
+  /* Cool Gray (Borders, Subtle UI) */
+  --secondary-text: #121826;
+  --accent: #facc15;
+  /* Bright Yellow (CTA, Active States) */
+  --accent-text: #121826;
+  --border-color: #1e293b;
+  /* Darker Border */
+  --ring: #facc15;
+  /* Accent Focus Color */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 🌐 Base Styles */
+@layer base {
+  /* ✅ Global Reset & Consistent Box Sizing */
+  * {
+    border-color: var(--border-color);
+    outline-color: var(--ring);
+    box-sizing: border-box;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* ✅ Consistent Typography */
+  body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.75;
+    /* Improved readability */
+    letter-spacing: 0.015em;
+    /* Slightly more spaced-out text */
+    font-size: 16px;
+  }
+
+  /* ✅ Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+
+  /* ✅ Paragraph & Text */
+  p {
+    color: var(--secondary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* ✅ Links */
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+  }
+
+  a:hover {
+    color: rgba(0, 86, 179, 0.8);
+  }
+
+  /* ✅ Buttons */
+  button {
+    background-color: var(--primary);
+    color: var(--primary-text);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  button:hover {
+    background-color: rgba(0, 86, 179, 0.9);
+  }
+
+  button:focus {
+    outline: 2px solid var(--ring);
+  }
+
+  /* ✅ Inputs & Forms */
+  input,
+  textarea {
+    background: var(--background);
+    color: var(--text);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: 2px solid var(--ring);
+  }
+
+  /* ✅ Spacing & Layout */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .section {
+    padding: 3rem 1rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  /* ✅ Flex Utility */
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
