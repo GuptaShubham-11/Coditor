@@ -30,7 +30,6 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      select: false, // Prevent sending it in queries
     },
     avatar: {
       type: String,
@@ -47,10 +46,14 @@ const userSchema = new Schema<IUser>(
   },
 );
 
-// Hash password before saving
-userSchema.pre<IUser>('save', async function (next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 11);
+
+  // Ensure password is not already hashed
+  if (!this.password.startsWith('$2b$')) {
+    this.password = await bcrypt.hash(this.password, 11);
+  }
+
   next();
 });
 
