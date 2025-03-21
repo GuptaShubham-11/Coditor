@@ -12,11 +12,11 @@ import { toast } from 'sonner';
 import Spinner from '@/components/Spinner';
 import { userApi } from '@/lib/apiCall/userApi';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  // ✅ Correctly initialize the `form` variable
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -48,7 +48,6 @@ export default function Register() {
     <div className="max-w-md mx-auto mt-12 p-8 rounded-lg shadow-lg bg-background text-text border border-border">
       <h2 className="text-3xl font-semibold text-center mb-6 text-primary">Sign Up</h2>
 
-      {/* ✅ Use `form` inside the `Form` component */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" aria-live="polite">
           {/* Name Field */}
@@ -132,9 +131,9 @@ export default function Register() {
       {/* Already have an account? */}
       <p className="text-sm text-center mt-4 text-muted-foreground">
         Already have an account?{' '}
-        <a href="/login" className="text-accent font-medium hover:underline">
+        <Link href="/login" className="text-accent font-medium hover:underline">
           Log in
-        </a>
+        </Link>
       </p>
     </div>
   );

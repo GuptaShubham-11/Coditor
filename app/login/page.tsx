@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import Spinner from '@/components/Spinner';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -31,8 +32,6 @@ export default function Login() {
       password: data.password,
       redirect: false,
     });
-
-    console.log(response);
 
     if (response?.error) {
       if (response.error === 'CredentialsSignin') {
@@ -115,9 +114,9 @@ export default function Login() {
       {/* Don't have an account? */}
       <p className="text-sm text-center mt-4 text-muted-foreground">
         Don't have an account?{' '}
-        <a href="/register" className="text-accent font-medium hover:underline">
+        <Link href="/register" className="text-accent font-medium hover:underline">
           Sign up
-        </a>
+        </Link>
       </p>
     </div>
   );
