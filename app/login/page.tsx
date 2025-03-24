@@ -1,73 +1,90 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import loginSchema from '@/schemas/login';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { toast } from 'sonner';
-import Spinner from '@/components/Spinner';
-import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import loginSchema from "@/schemas/login";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "sonner";
+import Spinner from "@/components/Spinner";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const router = useRouter();
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
+  const { isSubmitting } = form.formState; // Extracting submission state
+
   const onSubmit = async (data: LoginFormValues) => {
-    const response = await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+    try {
+      const response = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-    if (response?.error) {
-      if (response.error === 'CredentialsSignin') {
-        toast.success('Sign in successful');
-      } else {
-        toast.error(response.error);
+      if (response?.error) {
+        toast.error("Invalid email or password. Please try again.");
+        return;
       }
-    }
 
-    if (response?.url) {
-      router.replace('/dashboard');
+      toast.success("Sign in successful");
+      router.replace("/dashboard");
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-8 rounded-lg shadow-lg bg-background text-text border border-border">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-primary">Login</h2>
+    <div className="max-w-md mx-auto mt-12 p-8 rounded-xl shadow-lg 
+                    bg-backgroundL dark:bg-backgroundD 
+                    border-2 border-borderL dark:border-borderD
+                    transition-all duration-300 hover:shadow-xl">
+      <h2 className="text-3xl font-bold text-center mb-8 
+                     bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        Welcome Back
+      </h2>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" aria-live="polite">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Email Field */}
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <Label className="text-sm font-medium">Email</Label>
+                <Label className="text-sm font-medium text-textL dark:text-textD block">
+                  Email Address
+                </Label>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="example@mail.com"
-                    className="bg-secondary/20 focus:ring-2 focus:ring-accent focus:outline-none"
+                    className="input-field"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-accent dark:text-secondary" />
               </FormItem>
             )}
           />
@@ -78,16 +95,18 @@ export default function Login() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <Label className="text-sm font-medium">Password</Label>
+                <Label className="text-sm font-medium text-textL dark:text-textD block">
+                  Password
+                </Label>
                 <FormControl>
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    className="bg-secondary/20 focus:ring-2 focus:ring-accent focus:outline-none"
+                    className="input-field"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-accent dark:text-secondary" />
               </FormItem>
             )}
           />
@@ -95,27 +114,34 @@ export default function Login() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-2 mt-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all disabled:opacity-60 disabled:bg-primary/70"
-            disabled={form.formState.isSubmitting}
-            aria-busy={form.formState.isSubmitting}
+            className="w-full py-3 mt-4 bg-primary text-backgroundL 
+                      hover:bg-accent dark:hover:bg-secondary
+                      rounded-lg font-semibold
+                      transition-all duration-300 transform hover:scale-[1.02]
+                      shadow-md hover:shadow-lg"
+            disabled={isSubmitting}
           >
-            {form.formState.isSubmitting ? (
+            {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <Spinner />
-                Logging in...
+                Authenticating...
               </span>
             ) : (
-              'Login'
+              "Sign In"
             )}
           </Button>
         </form>
       </Form>
 
-      {/* Don't have an account? */}
-      <p className="text-sm text-center mt-4 text-muted-foreground">
-        Don't have an account?{' '}
-        <Link href="/register" className="text-accent font-medium hover:underline">
-          Sign up
+      {/* Sign Up Link */}
+      <p className="text-sm text-center mt-6 text-textL dark:text-textD">
+        New to Coditor?{" "}
+        <Link
+          href="/register"
+          className="text-primary dark:text-secondary font-semibold 
+                    hover:underline underline-offset-4"
+        >
+          Create Account
         </Link>
       </p>
     </div>
