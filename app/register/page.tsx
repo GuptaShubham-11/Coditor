@@ -1,18 +1,24 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import registerSchema from '@/schemas/register';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { toast } from 'sonner';
-import Spinner from '@/components/Spinner';
-import { userApi } from '@/lib/apiCall/userApi';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import registerSchema from "@/schemas/register";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "sonner";
+import Spinner from "@/components/Spinner";
+import { userApi } from "@/lib/apiCall/userApi";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -20,91 +26,108 @@ export default function Register() {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
     },
   });
+
   const router = useRouter();
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       const response = await userApi.register(data);
 
-      if (response.message === 'User registered successfully') {
+      if (response.message === "User registered successfully") {
         toast.success(response.message);
-        router.push('/login');
+        router.push("/login");
       }
     } catch (error: any) {
       if (error.response?.data) {
         toast.error(error.response.data.error);
       } else {
-        toast.error('Something went wrong, please try again');
+        toast.error("Something went wrong, please try again");
       }
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-8 rounded-lg shadow-lg bg-background text-text border border-border">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-primary">Sign Up</h2>
+    <div className="max-w-lg mx-auto mt-12 p-10 rounded-2xl shadow-xl 
+                    bg-backgroundL dark:bg-backgroundD 
+                    border border-borderL dark:border-borderD
+                    transition-all duration-300 hover:shadow-2xl">
 
+      {/* Title */}
+      <h2 className="text-4xl py-6 font-bold text-center
+                     bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        Sign Up
+      </h2>
+
+      {/* Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5" aria-live="polite">
-          {/* Name Field */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+          {/* Name */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <Label className="text-sm font-medium">Full Name</Label>
+                <Label className="text-sm font-semibold text-textL dark:text-textD">
+                  Full Name
+                </Label>
                 <FormControl>
                   <Input
                     placeholder="John Doe"
-                    className="bg-secondary/20 focus:ring-2 focus:ring-accent focus:outline-none"
+                    className="input-field"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-accent dark:text-secondary" />
               </FormItem>
             )}
           />
 
-          {/* Email Field */}
+          {/* Email */}
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <Label className="text-sm font-medium">Email</Label>
+                <Label className="text-sm font-semibold text-textL dark:text-textD">
+                  Email Address
+                </Label>
                 <FormControl>
                   <Input
                     type="email"
                     placeholder="example@mail.com"
-                    className="bg-secondary/20 focus:ring-2 focus:ring-accent focus:outline-none"
+                    className="input-field"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-accent dark:text-secondary" />
               </FormItem>
             )}
           />
 
-          {/* Password Field */}
+          {/* Password */}
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <Label className="text-sm font-medium">Password</Label>
+                <Label className="text-sm font-semibold text-textL dark:text-textD">
+                  Password
+                </Label>
                 <FormControl>
                   <Input
                     type="password"
                     placeholder="••••••••"
-                    className="bg-secondary/20 focus:ring-2 focus:ring-accent focus:outline-none"
+                    className="input-field"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-accent dark:text-secondary" />
               </FormItem>
             )}
           />
@@ -112,27 +135,33 @@ export default function Register() {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-2 mt-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all disabled:opacity-60 disabled:bg-primary/70"
+            className="w-full py-3 bg-primary text-white 
+                      hover:bg-accent dark:hover:bg-secondary
+                      rounded-lg font-semibold
+                      transition-all duration-300 transform hover:scale-[1.02]
+                      shadow-md hover:shadow-lg"
             disabled={form.formState.isSubmitting}
-            aria-busy={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
               <span className="flex items-center gap-2">
                 <Spinner />
-                Registering...
+                Creating Account...
               </span>
             ) : (
-              'Register'
+              "Get Started"
             )}
           </Button>
         </form>
       </Form>
 
-      {/* Already have an account? */}
-      <p className="text-sm text-center mt-4 text-muted-foreground">
-        Already have an account?{' '}
-        <Link href="/login" className="text-accent font-medium hover:underline">
-          Log in
+      {/* Already Have an Account? */}
+      <p className="text-sm text-center mt-6 text-textL dark:text-textD">
+        Already registered?{" "}
+        <Link
+          href="/login"
+          className="text-primary dark:text-secondary font-semibold hover:underline underline-offset-4"
+        >
+          Sign in here
         </Link>
       </p>
     </div>
