@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { CircleSlash2 } from 'lucide-react';
+import { Loader2 } from "lucide-react";
 
 export default function Spinner() {
   return (
     <div className="flex justify-center items-center h-16">
-      <CircleSlash2 className="w-8 h-8 text-white animate-spin" />
+      <Loader2 className="w-8 h-8 text-textL dark:text-textD animate-spin" />
     </div>
   );
 }
